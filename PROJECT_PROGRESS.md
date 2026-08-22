@@ -7,7 +7,7 @@
 
 - **Project:** MedGuardian – Intelligent Personal Medication and Medical Record Management Platform
 - **Branch:** `claude/medguardian-build-5y6gi6`
-- **Last updated:** Phase 10 complete
+- **Last updated:** Phase 12 complete
 
 ---
 
@@ -31,9 +31,9 @@
 | 8 | Adherence score service | `[x]` |
 | 9 | DRPA – Dynamic Refill Prediction Algorithm | `[x]` |
 | 10 | Drug interaction rule/dataset engine | `[x]` |
-| 11 | Medical records + secure document storage | `[~]` |
-| 12 | OCR (Tesseract) + user verification workflow | `[ ]` |
-| 13 | Caregiver module with granular permissions | `[ ]` |
+| 11 | Medical records + secure document storage | `[x]` |
+| 12 | OCR (Tesseract) + user verification workflow | `[x]` |
+| 13 | Caregiver module with granular permissions | `[~]` |
 | 14 | Medicine information assistant (curated KB retrieval) | `[ ]` |
 | 15 | Visit / treatment summary | `[ ]` |
 | 16 | Non-diagnostic health insights | `[ ]` |
@@ -204,16 +204,48 @@
 
 **Verified:** `npm test` → 275 passed (18 suites).
 
+### Phase 11 — Medical records `[x]`
+- `models/MedicalRecord.js` — title, 10 categories (prescription, pharmacy
+  bill, lab report, discharge summary, imaging, vaccination, insurance,
+  referral, consultation note, other), record date, description, provider,
+  doctor, free-form metadata map, tags, linked medicines, file sub-document
+  (checksum + authenticated URL), OCR sub-document, `shareableWithCaregivers`
+  (default **false**) and `isSensitive`.
+- Controller: list with category/tag/date/search filters, create with upload,
+  read (audit-logged view), update (sharing changes logged distinctly),
+  delete (**PIN step-up required**), authenticated download.
+- Download hardening: ownership re-checked per request, `Content-Disposition:
+  attachment` always, `X-Content-Type-Options: nosniff`, `Cache-Control:
+  no-store`, and every download written to the audit log.
+- Caregivers see only records the patient marked shareable and never a record
+  flagged sensitive; they cannot edit or delete.
+
+### Phase 12 — OCR + verification `[x]`
+- `services/ocrService.js` — Tesseract.js with a sharp pre-processing pass
+  (greyscale, contrast normalise, upscale) and a **regex/dictionary parser**
+  that extracts candidate medicines with strength, dosage form and frequency
+  hints. Confidence is a transparent additive score, not a model output.
+- **OCR output is never trusted.** Suggestions are stored as
+  `awaiting_verification`; medicines are created only by
+  `POST /api/records/:id/ocr/confirm`, from the entries in *that request*, so
+  the user can correct anything OCR got wrong. `rejectAll` discards everything.
+- `POST /api/records/:id/ocr` re-runs extraction on demand. PDFs are reported
+  as `unsupported` with a helpful message rather than failing the upload.
+
+**Verified:** `npm test` → 303 passed (20 suites).
+
 ---
 
 ## NEXT TASK
 
-**Phase 11 — Medical records.** Create `models/MedicalRecord.js`
-(title, category, record date, description, file metadata, tags, provider,
-caregiver-shareable flag), validators, controller (list/filter, create with
-file upload, read, update, delete, authenticated download) and routes.
-Downloads and record views must be audit-logged; deletion requires PIN
-step-up. Then Phase 12 adds Tesseract OCR + the user-verification workflow.
+**Phase 13 — Caregiver module.** Create `models/CaregiverLink.js`
+(patient, caregiver, status invited/accepted/declined/revoked, granular
+permissions: viewMedicines, viewSchedules, viewAdherence, viewRecords,
+canRecordIntake, receiveMissedDoseAlerts, relationship, invite token/expiry),
+validators, controller (invite by email, accept/decline, list links both ways,
+update permissions with PIN step-up, revoke) and routes. `patientContext`
+middleware already reads this model. Add a caregiver dashboard endpoint and
+integration tests covering permission enforcement.
 
 ---
 
