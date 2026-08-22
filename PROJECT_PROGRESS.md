@@ -7,7 +7,7 @@
 
 - **Project:** MedGuardian – Intelligent Personal Medication and Medical Record Management Platform
 - **Branch:** `claude/medguardian-build-5y6gi6`
-- **Last updated:** Phase 13 complete
+- **Last updated:** Phases 14-17 complete — backend finished, frontend next
 
 ---
 
@@ -34,11 +34,11 @@
 | 11 | Medical records + secure document storage | `[x]` |
 | 12 | OCR (Tesseract) + user verification workflow | `[x]` |
 | 13 | Caregiver module with granular permissions | `[x]` |
-| 14 | Medicine information assistant (curated KB retrieval) | `[~]` |
-| 15 | Visit / treatment summary | `[ ]` |
-| 16 | Non-diagnostic health insights | `[ ]` |
-| 17 | Audit logging & security hardening | `[ ]` |
-| 18 | Frontend scaffold + routing + auth context | `[ ]` |
+| 14 | Medicine information assistant (curated KB retrieval) | `[x]` |
+| 15 | Visit / treatment summary | `[x]` |
+| 16 | Non-diagnostic health insights | `[x]` |
+| 17 | Audit logging & security hardening | `[x]` |
+| 18 | Frontend scaffold + routing + auth context | `[~]` |
 | 19 | Frontend feature pages (all screens) | `[ ]` |
 | 20 | Testing & bug fixing | `[ ]` |
 | 21 | Documentation (README, docs/) | `[ ]` |
@@ -252,9 +252,66 @@
 
 **Verified:** `npm test` → 325 passed (21 suites).
 
+### Phase 14 — Medicine information assistant `[x]`
+- `data/medicineKnowledgeBase.json` — 16 curated, patient-facing entries
+  (uses, how it works, general precautions, storage, common side effects,
+  when to seek help). Marked demo data; **contains no doses anywhere** (a test
+  enforces this).
+- `services/medicineInfoService.js` — **retrieval, not generation**. Order of
+  operations: refuse → retrieve → ground.
+  - 7 refusal rule sets: diagnosis, prescribing, dosage change,
+    stop/continue, interaction (redirects to the Phase 10 dataset engine),
+    emergency (flagged urgent), personal circumstance.
+  - Retrieval by exact substance, alias, then transparent keyword scoring.
+  - A medicine absent from the corpus returns "not in the knowledge base" —
+    never an invented answer. `generatedByModel: false` on every response.
+
+### Phase 15 — Visit / treatment summary `[x]`
+- `services/visitSummaryService.js` — **extractive** rule-based sectioning
+  (medications, follow-up, investigations, advice, symptoms, observations,
+  clinician notes). Every returned line is verbatim from the source; a test
+  asserts no line exists that was not in the input. Patient identifiers are
+  stripped, never echoed. `isDiagnostic: false`.
+- Medicine reconciliation: compares the document's medicines against the
+  patient's list (in both / document only / list only) as a **name comparison
+  only**, with no clinical judgement.
+
+### Phase 16 — Non-diagnostic health insights `[x]`
+- `services/insightsService.js` — every insight comes from an explicit
+  threshold rule which is returned alongside it (`rule` field). Covers
+  adherence band, 30-vs-30-day trend, late doses, best streak, top skip reason
+  with practical suggestion, weakest medicine, refill urgency, and how skipping
+  stretches supply. A test asserts no medical condition is ever named.
+
+### Phase 17 — Dashboard + audit/security `[x]`
+- `GET /api/dashboard` — one call assembling today's doses, upcoming
+  reminders, adherence, stock, refill warnings, interaction alerts, recent
+  records and caregiver status.
+- Audit logging is wired through every sensitive path (auth, medicines,
+  schedules, intakes, records, file downloads, OCR, caregiver permissions).
+
+**Verified:** `npm test` → 409 passed (26 suites). **Backend is complete.**
+
+### Backend API surface
+`/api/health`, `/api/auth/*`, `/api/audit`, `/api/medicines`,
+`/api/schedules` (+`/occurrences`), `/api/intakes`, `/api/analytics`
+(adherence + DRPA refill), `/api/interactions`, `/api/records`,
+`/api/caregivers`, `/api/assistant` (medicine-info, visit-summary, insights),
+`/api/dashboard`.
+
 ---
 
 ## NEXT TASK
+
+**Phase 18 — Frontend scaffold.** Create the Vite + React 18 app:
+`package.json`, `vite.config.js`, `index.html`, global stylesheet with the
+healthcare design tokens, `services/api.js` (axios instance with token refresh
+interceptor), `context/AuthContext.jsx`, `components/ProtectedRoute.jsx`,
+app shell (sidebar + topbar), and `App.jsx` routing for every required page.
+Then Phase 19 fills in the pages.
+
+<details>
+<summary>Original Phase 14 task text (completed)</summary>
 
 **Phase 14 — Medicine information assistant.** Create
 `data/medicineKnowledgeBase.json` (curated, clearly-sourced entries: general
@@ -266,6 +323,8 @@ diagnosis, prescribing and dosage-change questions via an explicit refusal
 rule set, and must never answer an interaction question itself (it defers to
 the Phase 10 dataset engine). Then routes + unit tests. Phases 15-16 follow:
 visit summary (extractive, non-diagnostic) and health insights.
+
+</details>
 
 ---
 

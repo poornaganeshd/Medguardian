@@ -13,6 +13,8 @@ const analyticsRoutes = require('./analyticsRoutes');
 const interactionRoutes = require('./interactionRoutes');
 const recordRoutes = require('./recordRoutes');
 const caregiverRoutes = require('./caregiverRoutes');
+const assistantRoutes = require('./assistantRoutes');
+const dashboardRoutes = require('./dashboardRoutes');
 
 const router = express.Router();
 
@@ -37,5 +39,7 @@ router.use('/analytics', analyticsRoutes);
 router.use('/interactions', interactionRoutes);
 router.use('/records', recordRoutes);
 router.use('/caregivers', caregiverRoutes);
+router.use('/assistant', assistantRoutes);
+router.use('/dashboard', dashboardRoutes);
 
 module.exports = router;

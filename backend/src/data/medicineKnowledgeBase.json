@@ -1,0 +1,529 @@
+{
+  "knowledgeBaseName": "MedGuardian Curated Medicine Information Base",
+  "version": "1.0.0",
+  "isDemoData": true,
+  "demoDataNotice": "CURATED DEMO CONTENT FOR ACADEMIC DEMONSTRATION. These entries are general, patient-facing summaries written for this project from publicly available patient information leaflets and standard formulary guidance. They are deliberately GENERAL: no entry contains a dose, a treatment decision or advice for an individual. This is not a substitute for the leaflet supplied with your medicine or for advice from your pharmacist or doctor.",
+  "sourceNotes": "Content is hand-written summary text held in this repository. The assistant retrieves and returns these entries verbatim - it does not generate medical text at answer time, and it cannot answer about a medicine that is not in this file.",
+  "lastReviewed": "2026-01-15",
+  "scopeRules": {
+    "mayAnswer": [
+      "General description of a medicine",
+      "What it is commonly used for",
+      "How it generally works",
+      "General precautions and practical advice",
+      "Storage information",
+      "Commonly reported side effects",
+      "When to contact a doctor or pharmacist"
+    ],
+    "mustRefuse": [
+      "Diagnosing a condition or explaining what a symptom means for the user",
+      "Recommending or prescribing a medicine",
+      "Suggesting, changing, starting or stopping a dose",
+      "Advising whether to stop or continue treatment",
+      "Answering whether two medicines interact (this is handled by the separate deterministic interaction dataset)",
+      "Emergency or urgent clinical advice",
+      "Anything specific to pregnancy, breastfeeding, children or a personal medical condition"
+    ]
+  },
+  "entries": [
+    {
+      "substance": "paracetamol",
+      "displayName": "Paracetamol (Acetaminophen)",
+      "drugClass": "Analgesic / antipyretic",
+      "commonUses": [
+        "Relief of mild to moderate pain such as headache, toothache or period pain",
+        "Reducing fever"
+      ],
+      "howItWorks": "Paracetamol is thought to reduce the production of prostaglandins in the brain, which lowers the perception of pain and helps bring down a fever.",
+      "generalPrecautions": [
+        "Do not exceed the maximum daily amount stated on the pack - for most adults this is 4 g (usually eight 500 mg tablets) in 24 hours.",
+        "Paracetamol is present in many combination cold and flu remedies. Check every label so you do not take it twice.",
+        "Take extra care if you have liver problems or drink alcohol regularly.",
+        "Leave at least 4 hours between doses."
+      ],
+      "storage": "Store below 25°C in a dry place, in the original pack, away from direct sunlight and out of the reach of children.",
+      "commonSideEffects": [
+        "Side effects are uncommon at normal doses",
+        "Rarely: skin rash or an allergic reaction"
+      ],
+      "talkToYourDoctorIf": [
+        "You have taken more than the daily maximum, even if you feel well - overdose can damage the liver and needs urgent attention.",
+        "Your pain or fever lasts more than three days.",
+        "You develop a rash, swelling or difficulty breathing."
+      ],
+      "aliases": [
+        "acetaminophen",
+        "crocin",
+        "dolo",
+        "calpol",
+        "tylenol",
+        "panadol"
+      ]
+    },
+    {
+      "substance": "ibuprofen",
+      "displayName": "Ibuprofen",
+      "drugClass": "Non-steroidal anti-inflammatory drug (NSAID)",
+      "commonUses": [
+        "Pain relief, particularly where there is inflammation",
+        "Reducing fever",
+        "Muscular and joint aches, period pain"
+      ],
+      "howItWorks": "Ibuprofen blocks the COX enzymes that produce prostaglandins, chemicals involved in pain, swelling and fever.",
+      "generalPrecautions": [
+        "Take with or just after food to reduce stomach irritation.",
+        "Use the lowest dose that works, for the shortest time.",
+        "Not suitable for everyone - people with stomach ulcers, asthma, kidney disease, heart failure or who are pregnant should check first.",
+        "Avoid taking more than one anti-inflammatory painkiller at the same time."
+      ],
+      "storage": "Store below 25°C in a dry place. Keep liquid preparations tightly closed and out of the reach of children.",
+      "commonSideEffects": [
+        "Indigestion or stomach discomfort",
+        "Nausea",
+        "Headache or dizziness"
+      ],
+      "talkToYourDoctorIf": [
+        "You get stomach pain, black stools or vomit that looks like coffee grounds.",
+        "You have unexplained swelling of the ankles.",
+        "You are taking a blood thinner, another anti-inflammatory, or medicines for blood pressure."
+      ],
+      "aliases": [
+        "brufen",
+        "advil",
+        "motrin",
+        "nurofen"
+      ]
+    },
+    {
+      "substance": "aspirin",
+      "displayName": "Aspirin",
+      "drugClass": "Antiplatelet / NSAID",
+      "commonUses": [
+        "Low dose: helping to prevent blood clots after a heart attack or stroke",
+        "Higher dose: pain and fever relief"
+      ],
+      "howItWorks": "Aspirin irreversibly blocks an enzyme in platelets, making them less likely to clump together and form a clot. At higher doses it also reduces pain and inflammation.",
+      "generalPrecautions": [
+        "Low-dose aspirin is usually taken long term - do not stop it without medical advice.",
+        "Take with or after food.",
+        "Aspirin increases bleeding risk, especially alongside other blood thinners or anti-inflammatory painkillers.",
+        "Aspirin should not be given to children under 16 unless a doctor has specifically prescribed it."
+      ],
+      "storage": "Store below 25°C in a dry place. Aspirin absorbs moisture and smells of vinegar when it has degraded - discard tablets that smell strongly.",
+      "commonSideEffects": [
+        "Indigestion",
+        "Increased bruising or minor bleeding",
+        "Nausea"
+      ],
+      "talkToYourDoctorIf": [
+        "You notice unusual bruising, nosebleeds, blood in urine or black stools.",
+        "You need surgery or dental work - mention you take aspirin.",
+        "You develop ringing in the ears."
+      ],
+      "aliases": [
+        "ecosprin",
+        "disprin",
+        "acetylsalicylic acid"
+      ]
+    },
+    {
+      "substance": "metformin",
+      "displayName": "Metformin",
+      "drugClass": "Biguanide antidiabetic",
+      "commonUses": [
+        "Managing type 2 diabetes, usually as the first medicine tried",
+        "Sometimes used in polycystic ovary syndrome"
+      ],
+      "howItWorks": "Metformin reduces the amount of glucose the liver releases and helps the body respond better to its own insulin. It does not usually cause low blood sugar on its own.",
+      "generalPrecautions": [
+        "Take with or just after food to reduce stomach upset.",
+        "Slow-release tablets must be swallowed whole, not crushed or chewed.",
+        "Tell your doctor before any scan using a contrast dye, or before surgery.",
+        "Stop and seek advice if you become severely dehydrated (prolonged vomiting or diarrhoea)."
+      ],
+      "storage": "Store below 30°C in a dry place, in the original blister pack.",
+      "commonSideEffects": [
+        "Nausea, diarrhoea or a metallic taste, usually settling after a few weeks",
+        "Reduced appetite"
+      ],
+      "talkToYourDoctorIf": [
+        "You have severe or persistent vomiting or diarrhoea.",
+        "You develop unusual muscle pain, deep rapid breathing or extreme tiredness.",
+        "Your blood sugar readings are consistently outside the range you were given."
+      ],
+      "aliases": [
+        "glycomet",
+        "glucophage"
+      ]
+    },
+    {
+      "substance": "amlodipine",
+      "displayName": "Amlodipine",
+      "drugClass": "Calcium channel blocker",
+      "commonUses": [
+        "Lowering high blood pressure",
+        "Preventing chest pain (angina)"
+      ],
+      "howItWorks": "Amlodipine relaxes the muscle in blood vessel walls so the vessels widen, which lowers blood pressure and improves blood flow to the heart.",
+      "generalPrecautions": [
+        "Take at about the same time each day.",
+        "It may take a few weeks for the full effect on blood pressure.",
+        "Do not stop suddenly without advice, even if you feel well - high blood pressure usually has no symptoms.",
+        "Grapefruit juice can increase the amount of amlodipine in the blood."
+      ],
+      "storage": "Store below 30°C in a dry place, protected from light.",
+      "commonSideEffects": [
+        "Swollen ankles",
+        "Flushing or headache, often improving after the first weeks",
+        "Feeling dizzy, especially when standing up quickly"
+      ],
+      "talkToYourDoctorIf": [
+        "Your ankle swelling becomes troublesome.",
+        "You faint or feel very dizzy.",
+        "You develop chest pain that is new or worse."
+      ],
+      "aliases": [
+        "norvasc",
+        "amlong"
+      ]
+    },
+    {
+      "substance": "atorvastatin",
+      "displayName": "Atorvastatin",
+      "drugClass": "Statin (lipid-lowering)",
+      "commonUses": [
+        "Lowering cholesterol",
+        "Reducing the risk of heart attack and stroke"
+      ],
+      "howItWorks": "Atorvastatin blocks HMG-CoA reductase, the enzyme the liver uses to make cholesterol, which lowers LDL cholesterol in the blood.",
+      "generalPrecautions": [
+        "Usually taken once a day; it can be taken at any time of day but keep it consistent.",
+        "Avoid large amounts of grapefruit juice.",
+        "Continue any diet and exercise advice alongside the medicine.",
+        "Some antibiotics and antifungals interact with statins - always mention your statin when prescribed something new."
+      ],
+      "storage": "Store below 30°C in a dry place in the original pack.",
+      "commonSideEffects": [
+        "Muscle aches",
+        "Headache",
+        "Digestive upset"
+      ],
+      "talkToYourDoctorIf": [
+        "You get unexplained muscle pain, tenderness or weakness, particularly with a fever or dark urine.",
+        "You develop yellowing of the skin or eyes.",
+        "You become pregnant or are planning to."
+      ],
+      "aliases": [
+        "lipitor",
+        "atorva"
+      ]
+    },
+    {
+      "substance": "omeprazole",
+      "displayName": "Omeprazole",
+      "drugClass": "Proton pump inhibitor",
+      "commonUses": [
+        "Reducing stomach acid in reflux, heartburn and indigestion",
+        "Treating and preventing stomach ulcers",
+        "Protecting the stomach alongside anti-inflammatory painkillers"
+      ],
+      "howItWorks": "Omeprazole switches off the acid pumps in the stomach lining, substantially reducing acid production.",
+      "generalPrecautions": [
+        "Usually taken 30-60 minutes before a meal, most often before breakfast.",
+        "Capsules should be swallowed whole.",
+        "Long-term use is reviewed periodically - ask at your next appointment whether you still need it.",
+        "It can affect the absorption of some other medicines; space them apart if advised."
+      ],
+      "storage": "Store below 25°C in a dry place. Keep the bottle tightly closed - the capsules are sensitive to moisture.",
+      "commonSideEffects": [
+        "Headache",
+        "Diarrhoea or constipation",
+        "Wind or stomach pain"
+      ],
+      "talkToYourDoctorIf": [
+        "You have difficulty swallowing, keep vomiting, or vomit blood.",
+        "You notice black stools or unexplained weight loss.",
+        "Symptoms return quickly once the course finishes."
+      ],
+      "aliases": [
+        "omez",
+        "prilosec"
+      ]
+    },
+    {
+      "substance": "levothyroxine",
+      "displayName": "Levothyroxine",
+      "drugClass": "Thyroid hormone replacement",
+      "commonUses": [
+        "Treating an underactive thyroid (hypothyroidism)"
+      ],
+      "howItWorks": "Levothyroxine replaces the thyroxine hormone the thyroid gland is not producing in sufficient amounts.",
+      "generalPrecautions": [
+        "Take on an empty stomach, usually 30-60 minutes before breakfast, with water.",
+        "Separate it by at least 4 hours from calcium, iron, antacids and some other supplements, which block its absorption.",
+        "Keep to the same brand where possible, and take it at the same time each day.",
+        "Dose changes are guided by blood tests - never adjust it yourself."
+      ],
+      "storage": "Store below 25°C in a dry place, protected from light. Levothyroxine is sensitive to heat and humidity.",
+      "commonSideEffects": [
+        "At the correct dose there should be no side effects",
+        "Too high a dose can cause palpitations, tremor, sweating or weight loss"
+      ],
+      "talkToYourDoctorIf": [
+        "You have palpitations, a persistent tremor or feel unusually hot and anxious.",
+        "You become pregnant - the dose often needs review.",
+        "You start or stop another medicine, especially calcium, iron or an antacid."
+      ],
+      "aliases": [
+        "thyronorm",
+        "eltroxin",
+        "synthroid"
+      ]
+    },
+    {
+      "substance": "warfarin",
+      "displayName": "Warfarin",
+      "drugClass": "Oral anticoagulant (vitamin K antagonist)",
+      "commonUses": [
+        "Preventing and treating blood clots",
+        "Reducing stroke risk in atrial fibrillation",
+        "Protecting mechanical heart valves"
+      ],
+      "howItWorks": "Warfarin reduces the liver's production of vitamin K-dependent clotting factors, making the blood less likely to clot.",
+      "generalPrecautions": [
+        "The dose is set by regular INR blood tests and can change often - always follow the most recent instruction.",
+        "Keep your intake of green leafy vegetables (vitamin K) reasonably consistent rather than avoiding them entirely.",
+        "Many medicines, including some antibiotics and painkillers, change how warfarin works - check before starting anything new, including over-the-counter products.",
+        "Carry your anticoagulant card and mention warfarin before any procedure, including dental work."
+      ],
+      "storage": "Store below 25°C in a dry place in the original container, out of the reach of children.",
+      "commonSideEffects": [
+        "Easier bruising",
+        "Minor bleeding, for example from the gums when brushing"
+      ],
+      "talkToYourDoctorIf": [
+        "You have bleeding that will not stop, blood in urine or stools, or black tarry stools.",
+        "You have a fall or hit your head.",
+        "You miss doses or are unsure what dose to take."
+      ],
+      "aliases": [
+        "coumadin"
+      ]
+    },
+    {
+      "substance": "amoxicillin",
+      "displayName": "Amoxicillin",
+      "drugClass": "Penicillin antibiotic",
+      "commonUses": [
+        "Treating bacterial infections of the chest, ear, throat, sinuses, skin and urinary tract"
+      ],
+      "howItWorks": "Amoxicillin stops bacteria building their cell walls, which kills the bacteria.",
+      "generalPrecautions": [
+        "Finish the whole course even if you feel better, unless your doctor tells you to stop.",
+        "It has no effect on viral infections such as a common cold or flu.",
+        "Tell your doctor if you have ever had a reaction to penicillin.",
+        "Space doses evenly through the day."
+      ],
+      "storage": "Store capsules and tablets below 25°C in a dry place. Reconstituted liquid usually needs refrigeration and is discarded after 7 to 14 days - check the label.",
+      "commonSideEffects": [
+        "Nausea",
+        "Diarrhoea",
+        "Skin rash"
+      ],
+      "talkToYourDoctorIf": [
+        "You develop a rash, swelling of the face or lips, or difficulty breathing - seek urgent help.",
+        "You get severe or watery diarrhoea during or after the course.",
+        "Symptoms do not improve after two to three days."
+      ],
+      "aliases": [
+        "amoxil",
+        "augmentin"
+      ]
+    },
+    {
+      "substance": "azithromycin",
+      "displayName": "Azithromycin",
+      "drugClass": "Macrolide antibiotic",
+      "commonUses": [
+        "Treating chest, throat, ear, skin and some sexually transmitted infections"
+      ],
+      "howItWorks": "Azithromycin stops bacteria from producing the proteins they need to multiply.",
+      "generalPrecautions": [
+        "Often a short course of 3 to 5 days; finish it as prescribed.",
+        "Can be taken with or without food, though food may reduce stomach upset.",
+        "Separate it from antacids containing aluminium or magnesium by 2 hours.",
+        "Tell your doctor if you have a heart rhythm problem."
+      ],
+      "storage": "Store below 30°C in a dry place. Shake liquid preparations well before each dose.",
+      "commonSideEffects": [
+        "Nausea or stomach pain",
+        "Diarrhoea",
+        "Headache"
+      ],
+      "talkToYourDoctorIf": [
+        "You develop palpitations or fainting.",
+        "You get severe watery diarrhoea.",
+        "You develop yellowing of the skin or eyes."
+      ],
+      "aliases": [
+        "azithral",
+        "zithromax"
+      ]
+    },
+    {
+      "substance": "cetirizine",
+      "displayName": "Cetirizine",
+      "drugClass": "Antihistamine",
+      "commonUses": [
+        "Relief of hay fever and allergy symptoms",
+        "Relief of itching from hives"
+      ],
+      "howItWorks": "Cetirizine blocks histamine, the chemical released during an allergic reaction that causes sneezing, itching and a runny nose.",
+      "generalPrecautions": [
+        "Usually once a day.",
+        "It causes less drowsiness than older antihistamines, but some people are still affected - see how it affects you before driving.",
+        "Alcohol can add to any drowsiness."
+      ],
+      "storage": "Store below 25°C in a dry place.",
+      "commonSideEffects": [
+        "Drowsiness or tiredness",
+        "Dry mouth",
+        "Headache"
+      ],
+      "talkToYourDoctorIf": [
+        "Symptoms persist despite treatment.",
+        "You have severe swelling of the face, lips or throat - seek urgent help."
+      ],
+      "aliases": [
+        "zyrtec",
+        "cetzine"
+      ]
+    },
+    {
+      "substance": "salbutamol",
+      "displayName": "Salbutamol (Albuterol)",
+      "drugClass": "Short-acting beta-2 agonist (reliever inhaler)",
+      "commonUses": [
+        "Quick relief of asthma symptoms such as wheeze, cough and breathlessness",
+        "Relief of breathlessness in some lung conditions"
+      ],
+      "howItWorks": "Salbutamol relaxes the muscle around the airways within minutes, opening them up so breathing becomes easier.",
+      "generalPrecautions": [
+        "This is a reliever, not a preventer - it does not treat the underlying inflammation.",
+        "Needing it more than three times a week usually means asthma control should be reviewed.",
+        "Learn and check your inhaler technique; a spacer helps a great deal.",
+        "Always carry it with you and check the expiry and dose counter."
+      ],
+      "storage": "Store below 30°C. Do not puncture or burn the canister, and do not leave it in a hot car or in direct sunlight.",
+      "commonSideEffects": [
+        "Shakiness or tremor",
+        "Faster heartbeat",
+        "Headache"
+      ],
+      "talkToYourDoctorIf": [
+        "Your inhaler is not helping as much as usual, or you need it more often.",
+        "You are breathless at rest or cannot speak in full sentences - this is an emergency.",
+        "You wake at night with symptoms."
+      ],
+      "aliases": [
+        "ventolin",
+        "asthalin"
+      ]
+    },
+    {
+      "substance": "prednisolone",
+      "displayName": "Prednisolone",
+      "drugClass": "Corticosteroid",
+      "commonUses": [
+        "Reducing inflammation in conditions such as asthma flare-ups, arthritis, allergic reactions and inflammatory bowel disease"
+      ],
+      "howItWorks": "Prednisolone is a synthetic version of a hormone the body makes naturally; it damps down inflammation and the immune response.",
+      "generalPrecautions": [
+        "Take in the morning with or after food unless told otherwise.",
+        "Do not stop a longer course suddenly - the dose is usually reduced gradually.",
+        "Carry a steroid card for longer courses, and tell any healthcare professional you are taking it.",
+        "Avoid contact with chickenpox, shingles or measles if you have not had them, and seek advice if exposed."
+      ],
+      "storage": "Store below 25°C in a dry place.",
+      "commonSideEffects": [
+        "Increased appetite and weight gain",
+        "Difficulty sleeping",
+        "Mood changes",
+        "Higher blood sugar"
+      ],
+      "talkToYourDoctorIf": [
+        "You feel very unwell, feverish, or develop signs of infection.",
+        "Your blood sugar readings rise sharply.",
+        "You have severe stomach pain or black stools.",
+        "You have marked mood changes."
+      ],
+      "aliases": [
+        "wysolone",
+        "omnacortil"
+      ]
+    },
+    {
+      "substance": "pantoprazole",
+      "displayName": "Pantoprazole",
+      "drugClass": "Proton pump inhibitor",
+      "commonUses": [
+        "Reducing stomach acid in reflux and ulcers",
+        "Stomach protection alongside medicines that irritate the stomach"
+      ],
+      "howItWorks": "Pantoprazole blocks the acid pumps in the stomach lining, reducing acid production.",
+      "generalPrecautions": [
+        "Usually taken before breakfast.",
+        "Swallow tablets whole - do not crush or chew.",
+        "Often preferred over omeprazole for people taking clopidogrel.",
+        "Review long-term use periodically."
+      ],
+      "storage": "Store below 30°C in a dry place in the original pack.",
+      "commonSideEffects": [
+        "Headache",
+        "Diarrhoea",
+        "Nausea"
+      ],
+      "talkToYourDoctorIf": [
+        "You vomit blood or notice black stools.",
+        "You have difficulty swallowing or unexplained weight loss."
+      ],
+      "aliases": [
+        "pantop",
+        "pan 40"
+      ]
+    },
+    {
+      "substance": "losartan",
+      "displayName": "Losartan",
+      "drugClass": "Angiotensin II receptor blocker (ARB)",
+      "commonUses": [
+        "Lowering high blood pressure",
+        "Protecting the kidneys in diabetes",
+        "Reducing strain on the heart"
+      ],
+      "howItWorks": "Losartan blocks the action of angiotensin II, a hormone that narrows blood vessels, so the vessels relax and blood pressure falls.",
+      "generalPrecautions": [
+        "Take at the same time each day.",
+        "You may feel dizzy on the first few doses, particularly when standing up.",
+        "Kidney function and potassium are usually checked with blood tests.",
+        "Avoid potassium supplements or salt substitutes unless advised.",
+        "Not suitable in pregnancy."
+      ],
+      "storage": "Store below 30°C in a dry place, protected from moisture.",
+      "commonSideEffects": [
+        "Dizziness",
+        "Tiredness",
+        "Low blood pressure symptoms"
+      ],
+      "talkToYourDoctorIf": [
+        "You become pregnant.",
+        "You have severe dizziness or faint.",
+        "You develop swelling of the face, lips or tongue - seek urgent help."
+      ],
+      "aliases": [
+        "losar",
+        "cozaar"
+      ]
+    }
+  ]
+}
