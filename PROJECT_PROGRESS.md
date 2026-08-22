@@ -7,7 +7,7 @@
 
 - **Project:** MedGuardian – Intelligent Personal Medication and Medical Record Management Platform
 - **Branch:** `claude/medguardian-build-5y6gi6`
-- **Last updated:** Phase 4 complete
+- **Last updated:** Phase 7 complete
 
 ---
 
@@ -25,10 +25,10 @@
 | 2 | Authentication & authorization (JWT, bcrypt, roles, PIN step-up, WebAuthn) | `[x]` |
 | 3 | Medicine CRUD | `[x]` |
 | 4 | Medicine image upload + secure file serving | `[x]` |
-| 5 | Medication scheduling engine | `[~]` |
-| 6 | Visual reminders (dose occurrence generation) | `[ ]` |
-| 7 | Intake tracking (TAKEN / SKIPPED / LATE / PENDING) | `[ ]` |
-| 8 | Adherence score service | `[ ]` |
+| 5 | Medication scheduling engine | `[x]` |
+| 6 | Visual reminders (dose occurrence generation) | `[x]` |
+| 7 | Intake tracking (TAKEN / SKIPPED / LATE / PENDING) | `[x]` |
+| 8 | Adherence score service | `[~]` |
 | 9 | DRPA – Dynamic Refill Prediction Algorithm | `[ ]` |
 | 10 | Drug interaction rule/dataset engine | `[ ]` |
 | 11 | Medical records + secure document storage | `[ ]` |
@@ -124,16 +124,43 @@
 
 **Verified:** `npm test` → 100 passed (9 suites).
 
+### Phase 5-6 — Scheduling engine & dose occurrences `[x]`
+- `models/Schedule.js` — five frequencies (`daily`, `specific_days`,
+  `interval`, `cycle`, `as_needed`), multiple reminder times each with their
+  own dose quantity, start/end date, meal relation, grace window, pause state.
+- `utils/dateTime.js` — timezone-correct calendar helpers (dayjs + IANA zones).
+- `services/scheduleService.js` — **pure functions**: `isDueOnDate`,
+  `expandSchedule(s)`, `deriveStatus`, `attachIntakes`. Dose occurrences are
+  *derived, never stored*, so the reminder feed, adherence score and DRPA all
+  share one definition of "expected dose".
+- `GET /api/schedules/occurrences` — the feed powering visual reminders and
+  medication history, returning each dose with its medicine (image included)
+  and derived status.
+
+### Phase 7 — Intake tracking `[x]`
+- `models/Intake.js` — stores only what the patient asserts (`taken` /
+  `skipped`); `due` / `late` / `missed` are derived from the clock. Unique
+  index per (schedule, date, time) with as-needed doses excluded.
+- `services/intakeService.js` — **pure stock rules**: only a `taken` dose
+  consumes stock; correcting taken→skipped refunds it; stock never goes
+  negative and reports a shortfall instead.
+- `controllers/intakeController.js` — record, amend, delete, as-needed dosing
+  with a daily cap, and full medication history with filters.
+- Server-side validation that the slot really exists in the schedule, so a
+  client cannot invent doses to inflate its adherence score.
+
+**Verified:** `npm test` → 165 passed (12 suites).
+
 ---
 
 ## NEXT TASK
 
-**Phase 5 — Medication scheduling engine.** Create `models/Schedule.js`
-(frequency: daily / specific days / interval / as-needed, multiple reminder
-times, dose quantity, start & end date, active flag) plus
-`services/scheduleService.js` that expands a schedule into concrete dose
-occurrences for a date range (pure function → unit-testable without a
-database). Then validators, controller, routes and tests.
+**Phase 8 — Adherence score service.** Create
+`services/adherenceService.js` as a pure module computing, for a date range:
+expected doses (from schedule expansion, excluding as-needed), taken, skipped,
+missed, late, adherence % (taken / expected), a per-medicine breakdown and a
+daily trend series. Then expose `GET /api/analytics/adherence`, add unit tests,
+and continue to Phase 9 (DRPA).
 
 ---
 

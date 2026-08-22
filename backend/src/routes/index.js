@@ -7,6 +7,8 @@ const { ok } = require('../utils/apiResponse');
 const authRoutes = require('./authRoutes');
 const auditRoutes = require('./auditRoutes');
 const medicineRoutes = require('./medicineRoutes');
+const scheduleRoutes = require('./scheduleRoutes');
+const intakeRoutes = require('./intakeRoutes');
 
 const router = express.Router();
 
@@ -25,5 +27,7 @@ router.get('/health', (req, res) =>
 router.use('/auth', authRoutes);
 router.use('/audit', auditRoutes);
 router.use('/medicines', medicineRoutes);
+router.use('/schedules', scheduleRoutes);
+router.use('/intakes', intakeRoutes);
 
 module.exports = router;

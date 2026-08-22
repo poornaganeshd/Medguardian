@@ -37,6 +37,7 @@ function resolvePatientContext(options = {}) {
         throw ApiError.forbidden('You can only access your own records');
       }
       req.patientId = req.user._id;
+      req.patientTimezone = req.user.timezone;
       req.isCaregiverAccess = false;
       return next();
     }
@@ -96,6 +97,12 @@ function resolvePatientContext(options = {}) {
     req.patientId = link.patient;
     req.caregiverLink = link;
     req.isCaregiverAccess = true;
+
+    // Calendar decisions must follow the patient's timezone, not the caregiver's.
+    const User = mongoose.models.User;
+    const patient = User ? await User.findById(link.patient).select('timezone name') : null;
+    req.patientTimezone = patient?.timezone;
+    req.patientName = patient?.name;
 
     await auditService.record({
       req,
