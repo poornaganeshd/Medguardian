@@ -7,7 +7,7 @@
 
 - **Project:** MedGuardian – Intelligent Personal Medication and Medical Record Management Platform
 - **Branch:** `claude/medguardian-build-5y6gi6`
-- **Last updated:** Phase 19 complete — full stack built, docs & packaging next
+- **Last updated:** Phase 21 complete — documentation done, packaging next
 
 ---
 
@@ -40,9 +40,9 @@
 | 17 | Audit logging & security hardening | `[x]` |
 | 18 | Frontend scaffold + routing + auth context | `[x]` |
 | 19 | Frontend feature pages (all screens) | `[x]` |
-| 20 | Testing & bug fixing | `[~]` |
-| 21 | Documentation (README, docs/) | `[ ]` |
-| 22 | Production build + `MedGuardian_Final.zip` | `[ ]` |
+| 20 | Testing & bug fixing | `[x]` |
+| 21 | Documentation (README, docs/) | `[x]` |
+| 22 | Production build + `MedGuardian_Final.zip` | `[~]` |
 
 ---
 
@@ -341,15 +341,50 @@ Notable UI decisions:
 **Verified:** `npm run build` → clean (130 modules, 408 kB JS / 123 kB gzip),
 backend `npm test` → 409 passed.
 
+### Phase 20 — Testing `[x]`
+- 26 suites, **409 tests**, ~17 s. Three layers (unit / contract / integration).
+- Bugs found and fixed by tests during the build:
+  - DRPA treated unrecorded days as zero consumption → a non-logging patient
+    was told their supply lasted forever. Now only days with a recorded action
+    count as observed.
+  - DRPA consumed stock on days an alternate-day regimen was not due →
+    predicted 13 days instead of 20. The flat rate now applies only when there
+    is no fixed schedule at all.
+  - Timezone off-by-one in the forecast window inflated `scheduledPerDay` by
+    ~0.5%. Range construction now goes through the patient-timezone helpers.
+  - `fileService.resolveStoredPath` accepted a percent-encoded traversal string
+    as a literal filename. Now a strict `[A-Za-z0-9._-]+` allow-list.
+- `src/utils/seed.js` — deterministic demo patient with a month of history,
+  arranged so every feature has something to show (see README).
+
+### Phase 21 — Documentation `[x]`
+~3,000 lines across:
+- **README.md** — features, stack, structure, prerequisites, MongoDB setup for
+  Windows/macOS/Linux/Atlas/Docker, env config, run commands, demo data,
+  testing, production build, algorithm summaries, security summary, API map,
+  troubleshooting.
+- **docs/ARCHITECTURE.md** — layering rules, data model, why doses are derived
+  rather than stored, request lifecycle, frontend structure, trade-offs.
+- **docs/DRPA.md** — the six steps, the skipped-dose rule, the regression
+  guards and why it is not called AI, two defended design decisions, a full
+  worked example, urgency bands, constants, test properties.
+- **docs/DRUG_INTERACTIONS.md** — dataset provenance and format, the
+  normalisation pipeline, matching algorithm, endpoints, where the assistant
+  defers, and an honest limitations section.
+- **docs/SECURITY.md** — threat model, auth, tokens, PIN/WebAuthn step-up,
+  authorization layers, file security, audit design, AI safety boundaries,
+  production checklist, and what is deliberately out of scope.
+- **docs/API.md** — every endpoint with parameters, payloads and error codes.
+- **docs/TESTING.md** — strategy and what each suite proves.
+
 ---
 
 ## NEXT TASK
 
-**Phase 20-22 — Test, document, package.** Add a frontend smoke check,
-write `README.md`, `docs/ARCHITECTURE.md`, `docs/DRPA.md`,
-`docs/DRUG_INTERACTIONS.md`, `docs/SECURITY.md`, `docs/API.md`,
-`docs/TESTING.md`, then produce `MedGuardian_Final.zip` excluding
-`node_modules`, `.env`, uploads and build caches.
+**Phase 22 — Package.** Produce `MedGuardian_Final.zip` containing the full
+source and documentation, excluding `node_modules`, `.env`, `uploads/*`,
+`dist/`, `coverage/` and OS/editor cruft. Verify the archive's contents and
+size, then do a final full-suite + build run.
 
 <details>
 <summary>Original Phase 14 task text (completed)</summary>
