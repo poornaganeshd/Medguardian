@@ -7,7 +7,7 @@
 
 - **Project:** MedGuardian – Intelligent Personal Medication and Medical Record Management Platform
 - **Branch:** `claude/medguardian-build-5y6gi6`
-- **Last updated:** Phase 12 complete
+- **Last updated:** Phase 13 complete
 
 ---
 
@@ -33,8 +33,8 @@
 | 10 | Drug interaction rule/dataset engine | `[x]` |
 | 11 | Medical records + secure document storage | `[x]` |
 | 12 | OCR (Tesseract) + user verification workflow | `[x]` |
-| 13 | Caregiver module with granular permissions | `[~]` |
-| 14 | Medicine information assistant (curated KB retrieval) | `[ ]` |
+| 13 | Caregiver module with granular permissions | `[x]` |
+| 14 | Medicine information assistant (curated KB retrieval) | `[~]` |
 | 15 | Visit / treatment summary | `[ ]` |
 | 16 | Non-diagnostic health insights | `[ ]` |
 | 17 | Audit logging & security hardening | `[ ]` |
@@ -234,18 +234,38 @@
 
 **Verified:** `npm test` → 303 passed (20 suites).
 
+### Phase 13 — Caregiver module `[x]`
+- `models/CaregiverLink.js` — patient↔caregiver link with status
+  (invited/accepted/declined/revoked), 7 granular permissions, relationship,
+  and an invite token stored **only as a SHA-256 hash** with a 14-day expiry.
+- Safe defaults: medicines / schedules / adherence visible; **`viewRecords`
+  and `canRecordIntake` default to false** and must be granted deliberately.
+  There is no "full access" switch anywhere in the system.
+- Invitations are bound to the email they were addressed to — presenting a
+  valid token from a different account is refused and audit-logged.
+- Changing permissions requires **PIN / biometric step-up**; either side can
+  revoke, and revocation takes effect on the next request.
+- `GET /api/caregivers/patients/:id/summary` — read-only patient view where
+  each section is gated on its own permission.
+- Every caregiver read of patient data writes a
+  `CAREGIVER_ACCESSED_PATIENT_DATA` audit entry.
+
+**Verified:** `npm test` → 325 passed (21 suites).
+
 ---
 
 ## NEXT TASK
 
-**Phase 13 — Caregiver module.** Create `models/CaregiverLink.js`
-(patient, caregiver, status invited/accepted/declined/revoked, granular
-permissions: viewMedicines, viewSchedules, viewAdherence, viewRecords,
-canRecordIntake, receiveMissedDoseAlerts, relationship, invite token/expiry),
-validators, controller (invite by email, accept/decline, list links both ways,
-update permissions with PIN step-up, revoke) and routes. `patientContext`
-middleware already reads this model. Add a caregiver dashboard endpoint and
-integration tests covering permission enforcement.
+**Phase 14 — Medicine information assistant.** Create
+`data/medicineKnowledgeBase.json` (curated, clearly-sourced entries: general
+description, common uses, general precautions, storage, common side effects,
+"talk to your doctor if…"), and `services/medicineInfoService.js` implementing
+**retrieval over that curated corpus only** — normalised-name exact match plus
+a transparent keyword/TF-style scorer for free-text questions. It must refuse
+diagnosis, prescribing and dosage-change questions via an explicit refusal
+rule set, and must never answer an interaction question itself (it defers to
+the Phase 10 dataset engine). Then routes + unit tests. Phases 15-16 follow:
+visit summary (extractive, non-diagnostic) and health insights.
 
 ---
 

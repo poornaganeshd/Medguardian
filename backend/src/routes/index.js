@@ -12,6 +12,7 @@ const intakeRoutes = require('./intakeRoutes');
 const analyticsRoutes = require('./analyticsRoutes');
 const interactionRoutes = require('./interactionRoutes');
 const recordRoutes = require('./recordRoutes');
+const caregiverRoutes = require('./caregiverRoutes');
 
 const router = express.Router();
 
@@ -35,5 +36,6 @@ router.use('/intakes', intakeRoutes);
 router.use('/analytics', analyticsRoutes);
 router.use('/interactions', interactionRoutes);
 router.use('/records', recordRoutes);
+router.use('/caregivers', caregiverRoutes);
 
 module.exports = router;
