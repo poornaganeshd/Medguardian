@@ -7,7 +7,7 @@
 
 - **Project:** MedGuardian – Intelligent Personal Medication and Medical Record Management Platform
 - **Branch:** `claude/medguardian-build-5y6gi6`
-- **Last updated:** Phases 14-17 complete — backend finished, frontend next
+- **Last updated:** Phase 19 complete — full stack built, docs & packaging next
 
 ---
 
@@ -38,9 +38,9 @@
 | 15 | Visit / treatment summary | `[x]` |
 | 16 | Non-diagnostic health insights | `[x]` |
 | 17 | Audit logging & security hardening | `[x]` |
-| 18 | Frontend scaffold + routing + auth context | `[~]` |
-| 19 | Frontend feature pages (all screens) | `[ ]` |
-| 20 | Testing & bug fixing | `[ ]` |
+| 18 | Frontend scaffold + routing + auth context | `[x]` |
+| 19 | Frontend feature pages (all screens) | `[x]` |
+| 20 | Testing & bug fixing | `[~]` |
 | 21 | Documentation (README, docs/) | `[ ]` |
 | 22 | Production build + `MedGuardian_Final.zip` | `[ ]` |
 
@@ -299,16 +299,57 @@
 `/api/caregivers`, `/api/assistant` (medicine-info, visit-summary, insights),
 `/api/dashboard`.
 
+### Phase 18 — Frontend scaffold `[x]`
+- Vite + React 18 + React Router 6, `vite.config.js` with an `/api` dev proxy.
+- `styles/global.css` — a 630-line design system (tokens, layout, cards,
+  forms, badges, alerts, tables, dose cards, charts, modals, toasts), fully
+  responsive with print and reduced-motion support.
+- `services/api.js` — axios client attaching the access token and any held
+  step-up token, with **single-flight refresh + replay** on 401 and a
+  normalised error shape. Refresh tokens in `localStorage`, step-up tokens in
+  `sessionStorage` (short-lived by design).
+- `services/endpoints.js` — every API route in one file.
+- `context/AuthContext.jsx` (re-validates the stored session on load),
+  `context/ToastContext.jsx`, `components/ErrorBoundary.jsx`,
+  `components/ProtectedRoute.jsx`, `components/AppLayout.jsx` (sidebar +
+  topbar + mobile drawer), `components/ui/index.jsx` (shared primitives).
+- `hooks/useApi.js` (race-safe), `hooks/useDoseRecorder.js`,
+  `hooks/useStepUp.js` (catches `STEP_UP_REQUIRED`, shows the PIN dialog,
+  replays the action).
+- `utils/format.js`, `utils/webauthn.js` (hand-written base64url helpers).
+
+### Phase 19 — Frontend pages `[x]`
+All 21 screens: Landing, Login, Register, Dashboard, Reminders, Medicines,
+MedicineForm (add/edit), MedicineDetails, Schedules, History, Adherence
+(+ DRPA explainer), Interactions, Records, RecordDetails, OcrVerification,
+Caregivers, MedicineInfo, VisitSummary, Insights, Profile (4 tabs incl. the
+audit log), NotFound — plus a global error boundary.
+
+Notable UI decisions:
+- **DoseCard** shows the patient's own photo of the medicine — this is the
+  visual reminder that replaces voice alerts (explicit project scope).
+- Browser notifications are requested on the Reminders screen and fired when a
+  dose becomes due; no audio anywhere.
+- The DRPA panel exposes every rate, the confidence weight, the regression
+  coefficients (or the reason the fit was rejected) and the plain-language
+  explanation — the algorithm is presentable in a viva straight from the UI.
+- **OcrVerification** starts every suggestion *unchecked* and every field
+  editable; only ticked rows are sent.
+- Caregiver permission changes and destructive deletes route through
+  `useStepUp` → `PinGate`.
+
+**Verified:** `npm run build` → clean (130 modules, 408 kB JS / 123 kB gzip),
+backend `npm test` → 409 passed.
+
 ---
 
 ## NEXT TASK
 
-**Phase 18 — Frontend scaffold.** Create the Vite + React 18 app:
-`package.json`, `vite.config.js`, `index.html`, global stylesheet with the
-healthcare design tokens, `services/api.js` (axios instance with token refresh
-interceptor), `context/AuthContext.jsx`, `components/ProtectedRoute.jsx`,
-app shell (sidebar + topbar), and `App.jsx` routing for every required page.
-Then Phase 19 fills in the pages.
+**Phase 20-22 — Test, document, package.** Add a frontend smoke check,
+write `README.md`, `docs/ARCHITECTURE.md`, `docs/DRPA.md`,
+`docs/DRUG_INTERACTIONS.md`, `docs/SECURITY.md`, `docs/API.md`,
+`docs/TESTING.md`, then produce `MedGuardian_Final.zip` excluding
+`node_modules`, `.env`, uploads and build caches.
 
 <details>
 <summary>Original Phase 14 task text (completed)</summary>
