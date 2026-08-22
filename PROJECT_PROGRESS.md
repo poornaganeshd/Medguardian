@@ -7,7 +7,7 @@
 
 - **Project:** MedGuardian – Intelligent Personal Medication and Medical Record Management Platform
 - **Branch:** `claude/medguardian-build-5y6gi6`
-- **Last updated:** Phase 1 complete
+- **Last updated:** Phase 2 complete
 
 ---
 
@@ -22,8 +22,8 @@
 |---|-------|--------|
 | 0 | Repo skeleton, .gitignore, .env.example, progress tracker | `[x]` |
 | 1 | Backend scaffold + dependencies + MongoDB connection + server bootstrap | `[x]` |
-| 2 | Authentication & authorization (JWT, bcrypt, roles, PIN step-up, WebAuthn) | `[~]` |
-| 3 | Medicine CRUD | `[ ]` |
+| 2 | Authentication & authorization (JWT, bcrypt, roles, PIN step-up, WebAuthn) | `[x]` |
+| 3 | Medicine CRUD | `[~]` |
 | 4 | Medicine image upload + secure file serving | `[ ]` |
 | 5 | Medication scheduling engine | `[ ]` |
 | 6 | Visual reminders (dose occurrence generation) | `[ ]` |
@@ -75,21 +75,49 @@
 
 **Verified:** `npm test` → 3 passed.
 
+### Phase 2 — Authentication & authorization `[x]`
+- `models/User.js` — bcrypt password + PIN hashes (never selected by default),
+  roles (`patient` / `caregiver`), profile & notification preferences, WebAuthn
+  credential sub-documents, refresh-token hashes, login lockout, `passwordChangedAfter`.
+- `models/AuditLog.js` — append-only, 40+ enumerated actions, old/new value,
+  auth method, IP + user agent; immutable (update hooks blocked).
+- `services/auditService.js` — redacts secrets before writing, never throws.
+- `services/tokenService.js` — access / refresh (separate secrets) / step-up tokens,
+  refresh tokens stored only as SHA-256 hashes.
+- `middleware/auth.js` — `protect`, `authorize(...roles)`, `requireStepUp`, `optionalAuth`.
+- `controllers/authController.js` — register, login (generic failure message, lockout),
+  refresh **with rotation + reuse detection**, logout, profile read/update,
+  change password (revokes all sessions), set PIN, verify PIN (issues step-up token).
+- `controllers/webauthnController.js` — platform-authenticator registration and
+  assertion, issuing a step-up token on success.
+- `routes/authRoutes.js`, `routes/auditRoutes.js`.
+- Tests: 15 unit + 11 contract + 17 DB-guarded integration.
+
+**Verified:** `npm test` → 44 passed (5 suites).
+
 ---
 
 ## NEXT TASK
 
-**Phase 2 — Authentication & authorization.** Build `User` model (bcrypt
-password + PIN hash, roles, lockout), `AuditLog` model, token service, auth
-controller/routes (register, login, refresh, logout, profile, change password,
-set/verify PIN), `protect` / `authorize` / `requireStepUp` middleware, and
-WebAuthn credential registration + assertion. Then add auth tests.
+**Phase 3 — Medicine CRUD.** Create `models/Medicine.js` (name, generic
+name, strength, dosage form, instructions, prescriber notes, initial quantity,
+current stock, refill threshold, image), medicine validators, controller
+(list/filter/create/read/update/delete + stock adjustment) and routes. Then
+Phase 4 adds image upload with sharp + multer.
 
 ---
 
 ## Notes / decisions
 - Frontend built with **Vite + React 18** (fast dev server, modern tooling).
-- MongoDB is **not installed in the build container**; automated tests use
-  `mongodb-memory-server` so the suite runs without an external database.
+- MongoDB is **not reachable from the build container**: the egress policy
+  blocks `fastdl.mongodb.org`, so `mongodb-memory-server` cannot fetch a
+  `mongod` binary and no MongoDB package is installable. The test suite is
+  therefore split into three layers:
+  - `tests/unit/` — pure algorithm/service tests, always run.
+  - `tests/contract/` — routing, validation and auth middleware via supertest,
+    no database needed, always run.
+  - `tests/integration/` — full HTTP + database flows, wrapped in
+    `describeIfDb`. They run automatically on any machine with MongoDB:
+    `MONGO_TEST_URI=mongodb://127.0.0.1:27017/medguardian_test npm test`.
 - No doctor portal, no pharmacy integration, no voice reminders — visual
   (browser) reminders only, per project scope.

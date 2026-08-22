@@ -4,6 +4,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const { ok } = require('../utils/apiResponse');
 
+const authRoutes = require('./authRoutes');
+const auditRoutes = require('./auditRoutes');
+
 const router = express.Router();
 
 const STATES = ['disconnected', 'connected', 'connecting', 'disconnecting'];
@@ -17,5 +20,8 @@ router.get('/health', (req, res) =>
     timestamp: new Date().toISOString()
   })
 );
+
+router.use('/auth', authRoutes);
+router.use('/audit', auditRoutes);
 
 module.exports = router;
