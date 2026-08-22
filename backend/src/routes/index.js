@@ -9,6 +9,7 @@ const auditRoutes = require('./auditRoutes');
 const medicineRoutes = require('./medicineRoutes');
 const scheduleRoutes = require('./scheduleRoutes');
 const intakeRoutes = require('./intakeRoutes');
+const analyticsRoutes = require('./analyticsRoutes');
 
 const router = express.Router();
 
@@ -29,5 +30,6 @@ router.use('/audit', auditRoutes);
 router.use('/medicines', medicineRoutes);
 router.use('/schedules', scheduleRoutes);
 router.use('/intakes', intakeRoutes);
+router.use('/analytics', analyticsRoutes);
 
 module.exports = router;

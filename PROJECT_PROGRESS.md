@@ -7,7 +7,7 @@
 
 - **Project:** MedGuardian – Intelligent Personal Medication and Medical Record Management Platform
 - **Branch:** `claude/medguardian-build-5y6gi6`
-- **Last updated:** Phase 7 complete
+- **Last updated:** Phase 9 complete
 
 ---
 
@@ -28,9 +28,9 @@
 | 5 | Medication scheduling engine | `[x]` |
 | 6 | Visual reminders (dose occurrence generation) | `[x]` |
 | 7 | Intake tracking (TAKEN / SKIPPED / LATE / PENDING) | `[x]` |
-| 8 | Adherence score service | `[~]` |
-| 9 | DRPA – Dynamic Refill Prediction Algorithm | `[ ]` |
-| 10 | Drug interaction rule/dataset engine | `[ ]` |
+| 8 | Adherence score service | `[x]` |
+| 9 | DRPA – Dynamic Refill Prediction Algorithm | `[x]` |
+| 10 | Drug interaction rule/dataset engine | `[~]` |
 | 11 | Medical records + secure document storage | `[ ]` |
 | 12 | OCR (Tesseract) + user verification workflow | `[ ]` |
 | 13 | Caregiver module with granular permissions | `[ ]` |
@@ -151,16 +151,54 @@
 
 **Verified:** `npm test` → 165 passed (12 suites).
 
+### Phase 8 — Adherence score `[x]`
+- `services/adherenceService.js` — pure module. Explicit definitions:
+  `expected`, `taken`, `skipped`, `missed`, `pending`, and
+  **adherence % = taken / (expected − pending) × 100**. Doses still actionable
+  today are held out of the denominator so the score does not dip and recover
+  through the day; "no data" is reported as `null`, never as 0 or 100.
+  As-needed medicines never contribute expected doses.
+- Per-medicine breakdown, chronological daily trend, `labelFor` bands
+  (excellent ≥95, good ≥80, fair ≥60, else needs_attention), `compareWindows`
+  for trend direction.
+
+### Phase 9 — DRPA `[x]`
+- `services/linearRegression.js` — least-squares fit written from first
+  principles (slope, intercept, r², n). No ML library, no external weights.
+- `services/refillPredictionService.js` — the six-step DRPA:
+  **1 Expand → 2 Observe → 3 Rate → 4 Blend → 5 Project → 6 Report.**
+  - **Skipped doses are never deducted** and never inflate the consumption rate.
+  - Days with no recorded action are treated as *unknown*, not as zero
+    consumption (counting them as zero would tell a non-logging patient their
+    supply lasts forever).
+  - Three candidate rates: scheduled, observed average, regression trend.
+    The trend is used only with ≥7 observed days **and** r² ≥ 0.30; otherwise
+    the reason it was rejected is returned in the response.
+  - Confidence blend `w = min(1, observedDays/14)` between observation and
+    schedule, so day-one forecasts are not wild.
+  - Day-by-day forward projection that respects alternate-day, weekday-only
+    and cycle regimens instead of smoothing them into an average.
+  - Output includes every input, both coefficients, r², urgency, run-out and
+    threshold dates, a suggested refill quantity and a plain-language
+    explanation array suitable for a project viva.
+- `GET /api/analytics/adherence`, `GET /api/analytics/refill`,
+  `GET /api/analytics/refill/:medicineId`.
+
+**Verified:** `npm test` → 242 passed (16 suites), including 33 DRPA tests and
+26 adherence tests.
+
 ---
 
 ## NEXT TASK
 
-**Phase 8 — Adherence score service.** Create
-`services/adherenceService.js` as a pure module computing, for a date range:
-expected doses (from schedule expansion, excluding as-needed), taken, skipped,
-missed, late, adherence % (taken / expected), a per-medicine breakdown and a
-daily trend series. Then expose `GET /api/analytics/adherence`, add unit tests,
-and continue to Phase 9 (DRPA).
+**Phase 10 — Drug interaction engine.** Create
+`data/drugInteractions.json` (clearly marked DEMO data, with source notes),
+`services/drugInteractionService.js` — a deterministic dataset/rule lookup
+keyed on normalised drug names, pairwise A+B matching including combination
+products, severity, description and precautions. Then
+`GET /api/interactions/check` (ad-hoc pair list) and
+`GET /api/interactions/my-medicines` (all active medicines), plus unit tests.
+**No LLM may generate or alter interaction facts.**
 
 ---
 
