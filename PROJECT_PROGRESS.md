@@ -7,7 +7,7 @@
 
 - **Project:** MedGuardian – Intelligent Personal Medication and Medical Record Management Platform
 - **Branch:** `claude/medguardian-build-5y6gi6`
-- **Last updated:** Phase 9 complete
+- **Last updated:** Phase 10 complete
 
 ---
 
@@ -30,8 +30,8 @@
 | 7 | Intake tracking (TAKEN / SKIPPED / LATE / PENDING) | `[x]` |
 | 8 | Adherence score service | `[x]` |
 | 9 | DRPA – Dynamic Refill Prediction Algorithm | `[x]` |
-| 10 | Drug interaction rule/dataset engine | `[~]` |
-| 11 | Medical records + secure document storage | `[ ]` |
+| 10 | Drug interaction rule/dataset engine | `[x]` |
+| 11 | Medical records + secure document storage | `[~]` |
 | 12 | OCR (Tesseract) + user verification workflow | `[ ]` |
 | 13 | Caregiver module with granular permissions | `[ ]` |
 | 14 | Medicine information assistant (curated KB retrieval) | `[ ]` |
@@ -187,18 +187,33 @@
 **Verified:** `npm test` → 242 passed (16 suites), including 33 DRPA tests and
 26 adherence tests.
 
+### Phase 10 — Drug interaction engine `[x]`
+- `data/drugInteractions.json` — 30 curated interaction records + 5 duplicate
+  therapy groups. **Explicitly flagged `isDemoData: true`** with a prominent
+  notice, source notes and a statement that no record was LLM-generated.
+  Same record shape as a licensed dataset, so it can be swapped out.
+- `services/drugInteractionService.js` — deterministic O(1) index lookup on
+  normalised names, order-independent pair keys, combination-product
+  decomposition, severity ranking, duplicate-therapy detection (including
+  hidden paracetamol), verbatim fact copying, demo notice + disclaimer on
+  every response, `method: 'deterministic-dataset-lookup'`,
+  `llmInvolved: false`.
+- `GET /api/interactions/my-medicines`, `POST /api/interactions/check`
+  (ad-hoc names, optionally combined with the patient's list),
+  `GET /api/interactions/dataset` (provenance).
+
+**Verified:** `npm test` → 275 passed (18 suites).
+
 ---
 
 ## NEXT TASK
 
-**Phase 10 — Drug interaction engine.** Create
-`data/drugInteractions.json` (clearly marked DEMO data, with source notes),
-`services/drugInteractionService.js` — a deterministic dataset/rule lookup
-keyed on normalised drug names, pairwise A+B matching including combination
-products, severity, description and precautions. Then
-`GET /api/interactions/check` (ad-hoc pair list) and
-`GET /api/interactions/my-medicines` (all active medicines), plus unit tests.
-**No LLM may generate or alter interaction facts.**
+**Phase 11 — Medical records.** Create `models/MedicalRecord.js`
+(title, category, record date, description, file metadata, tags, provider,
+caregiver-shareable flag), validators, controller (list/filter, create with
+file upload, read, update, delete, authenticated download) and routes.
+Downloads and record views must be audit-logged; deletion requires PIN
+step-up. Then Phase 12 adds Tesseract OCR + the user-verification workflow.
 
 ---
 
