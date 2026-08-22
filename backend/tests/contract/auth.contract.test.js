@@ -62,3 +62,19 @@ describe('auth route contract', () => {
     expect(res.body.code).toBe('BAD_JSON');
   });
 });
+
+describe('medicine route contract', () => {
+  const request2 = require('supertest');
+  const application = require('../../src/app');
+
+  it.each([
+    ['GET', '/api/medicines'],
+    ['POST', '/api/medicines'],
+    ['GET', '/api/medicines/64b7f0c2f1a2b3c4d5e6f708'],
+    ['PATCH', '/api/medicines/64b7f0c2f1a2b3c4d5e6f708'],
+    ['DELETE', '/api/medicines/64b7f0c2f1a2b3c4d5e6f708']
+  ])('requires authentication for %s %s', async (method, path) => {
+    const res = await request2(application)[method.toLowerCase()](path).send({});
+    expect(res.status).toBe(401);
+  });
+});

@@ -7,7 +7,7 @@
 
 - **Project:** MedGuardian – Intelligent Personal Medication and Medical Record Management Platform
 - **Branch:** `claude/medguardian-build-5y6gi6`
-- **Last updated:** Phase 2 complete
+- **Last updated:** Phase 4 complete
 
 ---
 
@@ -23,9 +23,9 @@
 | 0 | Repo skeleton, .gitignore, .env.example, progress tracker | `[x]` |
 | 1 | Backend scaffold + dependencies + MongoDB connection + server bootstrap | `[x]` |
 | 2 | Authentication & authorization (JWT, bcrypt, roles, PIN step-up, WebAuthn) | `[x]` |
-| 3 | Medicine CRUD | `[~]` |
-| 4 | Medicine image upload + secure file serving | `[ ]` |
-| 5 | Medication scheduling engine | `[ ]` |
+| 3 | Medicine CRUD | `[x]` |
+| 4 | Medicine image upload + secure file serving | `[x]` |
+| 5 | Medication scheduling engine | `[~]` |
 | 6 | Visual reminders (dose occurrence generation) | `[ ]` |
 | 7 | Intake tracking (TAKEN / SKIPPED / LATE / PENDING) | `[ ]` |
 | 8 | Adherence score service | `[ ]` |
@@ -95,15 +95,45 @@
 
 **Verified:** `npm test` → 44 passed (5 suites).
 
+### Phase 3 — Medicine CRUD `[x]`
+- `models/Medicine.js` — identity (name, generic name, normalised name,
+  manufacturer), presentation (strength, dosage form, unit, colour, shape),
+  guidance (instructions, prescriber notes, prescriber, purpose, storage),
+  stock (initial quantity, current stock, refill threshold, last refill,
+  expiry), image sub-document, `needsRefill` / `isExpired` / `displayName`
+  virtuals, auto-synced `normalizedName`.
+- `utils/drugNameNormalizer.js` — deterministic rule-based normalisation
+  (dosage stripping, pack-noise removal, brand→generic map, order-independent
+  combination keys). Shared by medicines and the interaction engine.
+- `validators/medicineValidators.js`, `controllers/medicineController.js`
+  (list with search/filter/sort/pagination, get, create, update, delete,
+  stock adjust), `routes/medicineRoutes.js`.
+- `middleware/patientContext.js` — resolves the target patient and enforces
+  caregiver permissions (used by every patient-scoped module from here on).
+- `services/medicineCleanupService.js` — cascades deletes to schedules/intakes.
+- Deleting a medicine requires PIN/biometric **step-up**.
+
+### Phase 4 — Medicine image upload `[x]`
+- `middleware/upload.js` — multer disk storage with random filenames, MIME
+  allow-list and size cap, outside any statically served directory.
+- `services/fileService.js` — sharp pipeline producing a normalised 1024px
+  webp + 320px square thumbnail with **EXIF stripped**; strict filename
+  allow-list and traversal-proof path resolution; safe deletion.
+- `POST/GET/DELETE /api/medicines/:id/image` — images are served only through
+  an authenticated endpoint that re-checks ownership on every request.
+
+**Verified:** `npm test` → 100 passed (9 suites).
+
 ---
 
 ## NEXT TASK
 
-**Phase 3 — Medicine CRUD.** Create `models/Medicine.js` (name, generic
-name, strength, dosage form, instructions, prescriber notes, initial quantity,
-current stock, refill threshold, image), medicine validators, controller
-(list/filter/create/read/update/delete + stock adjustment) and routes. Then
-Phase 4 adds image upload with sharp + multer.
+**Phase 5 — Medication scheduling engine.** Create `models/Schedule.js`
+(frequency: daily / specific days / interval / as-needed, multiple reminder
+times, dose quantity, start & end date, active flag) plus
+`services/scheduleService.js` that expands a schedule into concrete dose
+occurrences for a date range (pure function → unit-testable without a
+database). Then validators, controller, routes and tests.
 
 ---
 
